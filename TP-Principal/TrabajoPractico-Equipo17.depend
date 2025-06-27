@@ -1,21 +1,21 @@
 # depslib dependency file v1.0
-1749843778 source:c:\users\sar\desktop\utn\1er c. 2025\programaci髇 1\trabajo integrador\trabajopractico-equipo17\main.cpp
+1749843778 source:c:\users\sar\desktop\utn\1er c. 2025\programaci贸n 1\trabajo integrador\trabajopractico-equipo17\main.cpp
 	<iostream>
 	<ctime>
 	"menu.h"
 
-1749842280 c:\users\sar\desktop\utn\1er c. 2025\programaci髇 1\trabajo integrador\trabajopractico-equipo17\menu.h
+1749842280 c:\users\sar\desktop\utn\1er c. 2025\programaci贸n 1\trabajo integrador\trabajopractico-equipo17\menu.h
 
-1749843621 source:c:\users\sar\desktop\utn\1er c. 2025\programaci髇 1\trabajo integrador\trabajopractico-equipo17\menu.cpp
+1749843621 source:c:\users\sar\desktop\utn\1er c. 2025\programaci贸n 1\trabajo integrador\trabajopractico-equipo17\menu.cpp
 	<iostream>
 	"menu.h"
 	"jugar.h"
 
-1749844315 source:c:\users\sar\desktop\utn\1er c. 2025\programaci髇 1\trabajo integrador\trabajopractico-equipo17\jugar.cpp
+1749844315 source:c:\users\sar\desktop\utn\1er c. 2025\programaci贸n 1\trabajo integrador\trabajopractico-equipo17\jugar.cpp
 	<iostream>
 	"jugar.h"
 
-1749843516 c:\users\sar\desktop\utn\1er c. 2025\programaci髇 1\trabajo integrador\trabajopractico-equipo17\jugar.h
+1749843516 c:\users\sar\desktop\utn\1er c. 2025\programaci贸n 1\trabajo integrador\trabajopractico-equipo17\jugar.h
 
 1749843778 source:c:\users\sar\desktop\trabajo integrador\trabajopractico-equipo17\main.cpp
 	<iostream>
