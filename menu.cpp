@@ -1,6 +1,7 @@
 #include <iostream>
 #include "menu.h"
 #include "jugar.h"
+#include "creditos.h"
 using namespace std;
 
 void menu() {
@@ -21,7 +22,7 @@ void menu() {
                 system("pause");
                 break;
             case 3:
-                cout << "PANTALLA CREDITOS" << endl;
+                MostrarCreditos();
                 system("pause");
                 break;
             case 0:
