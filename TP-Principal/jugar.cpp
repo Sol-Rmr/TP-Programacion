@@ -86,7 +86,7 @@ void mostrarFinal (string nombre, int puntaje) {
     cout << "---------- Fin del Juego ----------" << endl;
     cout << "\nNombre del Jugador:  " << nombre << endl;
     cout << "Puntaje Total:       " << puntaje << endl;
-    cout << "\n\n\nVolviendo al menu..." << endl;
+    cout << "\n\n\nVolviendo al menu de juego..." << endl;
 }
 
 ///COMBINACIONES
@@ -196,14 +196,13 @@ string detectarCombinacion(int dados[], int &puntos, int tamanio) {
 }
 
 
-///MODO UN JUGADOR
+/// MODO UN JUGADOR
 void gameplayUnJugador() {
     //Ingreso de nombre
     system("cls");
     encabezadoUnJugador();
     string nombreJugador = ingresarNombre();
 
-    //Gameplay
     const int TAM = 5;
     int tirada [TAM];
     int totalTurnos = 3, totalTiradas = 3;
@@ -253,51 +252,7 @@ void gameplayUnJugador() {
 
 }
 
-
-
-
-
-
-/// FUNCIONES DE LA CLASE 
-void gameplay() {
-
-    cout << "ARRANCA EL JUEGO" << endl;
-    int puntosTotalesJugador1 = 0;
-    int puntosTotalesJugador2 = 0;
-
-    const int TAM = 5;
-    int tirada[TAM];
-    int totalRondas = 2;
-
-    system("cls");
-    for(int i = 1; i <=totalRondas; i++)
-    {
-        cout << "RONDA " << i << endl;
-        cout << "-------------" << endl;
-        for(int j = 1; j <= 2; j++)
-        {
-            if(j==1){
-            cout << "JUGADOR #" << j << endl;
-            generarTirada(tirada,TAM);
-            mostrarTirada(tirada,TAM);
-            puntosTotalesJugador1 += obtenerPuntos(tirada,TAM);
-            }
-            if(j==2){
-            cout << "\nJUGADOR #" << j << endl;
-            generarTirada(tirada,TAM);
-            mostrarTirada(tirada,TAM);
-            puntosTotalesJugador2 += obtenerPuntos(tirada,TAM);
-            }
-        }
-        system("pause");
-        system("cls");
-    }
-
-    cout << "Jugador 1: " << puntosTotalesJugador1 << " puntos" << endl;
-    cout << "Jugador 2: " << puntosTotalesJugador2 << " puntos" << endl;
-
-}
-
+/// FUNCIONES DE LA CLASE
 int obtenerRandom(int tamanio){
     return rand()%tamanio + 1;
 }
@@ -314,13 +269,4 @@ void mostrarTirada(int v[], int tamanio){
     }
 
     cout << endl;
-}
-
-int obtenerPuntos(int v[], int tamanio){
-    int puntos = 0;
-
-    for(int i = 0; i < tamanio; i++){
-        puntos += v[i];
-    }
-    return puntos;
 }
