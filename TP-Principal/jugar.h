@@ -3,7 +3,7 @@
 
 using namespace std;
 
-void ModoDeJuegoMenu();
+void ModoDeJuegoMenu(string nombres[], int puntajes[], int t);
 void ModoDeJuegoOpciones();
 
 string ingresarNombre();
@@ -18,10 +18,8 @@ string detectarCombinacion(int dados[], int &puntos, int tamanio);
 
 
 ///MODO UN JUGADOR
-void gameplayUnJugador();
+void gameplayUnJugador(string nombres[], int puntajes[], int t);
 
-
-/// FUNCIONES DE LA CLASE
 int obtenerRandom(int tamanio);
 void generarTirada(int v[], int tamanio);
 void mostrarTirada(int v[], int tamanio);
