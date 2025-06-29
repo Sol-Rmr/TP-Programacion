@@ -1,9 +1,11 @@
 #include <iostream>
 #include "jugar.h"
+#include "menu.h"
+#include "estadisticas.h"
 using namespace std;
 
 ///ELECCION DE MODO DE JUEGO
-void ModoDeJuegoMenu() {
+void ModoDeJuegoMenu(string nombres[], int puntajes[], int t) {
     int opcion;
     do {
         ModoDeJuegoOpciones();
@@ -12,7 +14,7 @@ void ModoDeJuegoMenu() {
 
         switch(opcion) {
             case 1:
-                gameplayUnJugador();
+                gameplayUnJugador(nombres, puntajes, t);
                 system("pause");
                 break;
             case 2:
@@ -197,7 +199,7 @@ string detectarCombinacion(int dados[], int &puntos, int tamanio) {
 
 
 /// MODO UN JUGADOR
-void gameplayUnJugador() {
+void gameplayUnJugador(string nombres[], int puntajes[], int t) {
     //Ingreso de nombre
     system("cls");
     encabezadoUnJugador();
@@ -247,8 +249,8 @@ void gameplayUnJugador() {
             }
         }
     }
-
     mostrarFinal(nombreJugador,puntajeTotal);
+    actualizarPuntajes(nombres, puntajes, t, nombreJugador, puntajeTotal);
 
 }
 
