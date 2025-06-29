@@ -2,9 +2,17 @@
 #include "menu.h"
 #include "jugar.h"
 #include "creditos.h"
+#include "estadisticas.h"
 using namespace std;
 
 void menu() {
+
+    const int TAM_JUGADORES = 5;
+    string mejoresJugadores[TAM_JUGADORES];
+    int mejoresPuntajes[TAM_JUGADORES];
+
+    ponerVectorCero(mejoresPuntajes, TAM_JUGADORES);
+
     int opcion;
 
     do{
@@ -14,11 +22,11 @@ void menu() {
 
         switch(opcion) {
             case 1:
-                ModoDeJuegoMenu();
+                ModoDeJuegoMenu(mejoresJugadores, mejoresPuntajes, TAM_JUGADORES);
                 system("pause");
                 break;
             case 2:
-                cout << "PANTALLA ESTADISTICAS" << endl;
+                mostrarEstadisticas(mejoresJugadores,mejoresPuntajes);
                 system("pause");
                 break;
             case 3:
