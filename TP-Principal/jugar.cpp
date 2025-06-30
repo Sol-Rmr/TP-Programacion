@@ -91,6 +91,25 @@ void mostrarFinal (string nombre, int puntaje) {
     cout << "\n\n\nVolviendo al menu de juego..." << endl;
 }
 
+int obtenerRandom(int tamanio){
+    return rand()%tamanio + 1;
+}
+
+void generarTirada(int v[], int tamanio){
+    for(int i = 0; i < tamanio; i++){
+        v[i] = obtenerRandom(6);
+    }
+}
+
+void mostrarTirada(int v[], int tamanio){
+    for(int i = 0; i < tamanio; i++){
+        cout << v[i] << " ";
+    }
+
+    cout << endl;
+}
+
+
 ///COMBINACIONES
 // Contar cuántas veces aparece un número
 int contar(int dados[], int valor, int tamanio) {
@@ -252,23 +271,4 @@ void gameplayUnJugador(string nombres[], int puntajes[], int t) {
     mostrarFinal(nombreJugador,puntajeTotal);
     actualizarPuntajes(nombres, puntajes, t, nombreJugador, puntajeTotal);
 
-}
-
-/// FUNCIONES DE LA CLASE
-int obtenerRandom(int tamanio){
-    return rand()%tamanio + 1;
-}
-
-void generarTirada(int v[], int tamanio){
-    for(int i = 0; i < tamanio; i++){
-        v[i] = obtenerRandom(6);
-    }
-}
-
-void mostrarTirada(int v[], int tamanio){
-    for(int i = 0; i < tamanio; i++){
-        cout << v[i] << " ";
-    }
-
-    cout << endl;
 }
