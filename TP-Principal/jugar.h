@@ -11,7 +11,7 @@ void encabezadoUnJugador();
 void encabezadoDosJugadores();
 void mostrarTurno(int &turno, string &nombre, int &puntaje, int &tirada);
 int preguntarFinalizarTurno();
-void mostrarResultado(int puntaje, string combinacion);
+void mostrarResultado(int puntaje, string combinacion, int puntajeTotal, int v[], int t);
 void mostrarFinal (string nombre, int puntaje);
 int obtenerRandom(int tamanio);
 void generarTirada(int v[], int tamanio);
@@ -19,10 +19,18 @@ void mostrarTirada(int v[], int tamanio);
 void generarTiradaTurno(int v[], int tamanio);
 void mostrarTiradaTurno(string nombres[], int v[], int tamanio);
 void mostrarPrimerJugador(string nombre);
+void opcionesRelanzamientos(int v[], int t);
+int relanzarUnDado(int v[]);
 
 ///COMBINACIONES
-int contar(int dados[], int valor, int tamanio);
 string detectarCombinacion(int dados[], int &puntos, int tamanio);
+bool esTrio(int v[], int tamanio, int &puntaje);
+bool esPoker(int v[], int t, int &puntaje);
+bool esFull(int v[], int t);
+bool esEscaleraPequena(int v[], int t);
+bool esEscaleraGrande(int v[], int t);
+bool esYahtico (int v[], int t);
+
 
 void definirTurno(string nombres[], int v[], int tamanio);
 
