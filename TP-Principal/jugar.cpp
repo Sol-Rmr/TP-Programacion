@@ -77,8 +77,10 @@ int preguntarFinalizarTurno() {
     return opcion;
 }
 
-void mostrarResultado(int puntaje, string combinacion, int puntajeTotal) {
-    cout << "\n\n * * * * * TURNO TERMINADO * * * * *" << endl;
+void mostrarResultado(int puntaje, string combinacion, int puntajeTotal, int v[], int t) {
+    cout << " * * * * * TURNO TERMINADO * * * * *" << endl;
+    cout << "Tirada:" << endl;
+    mostrarTirada(v, t);
     cout << "Combinacion final: " << combinacion << endl;
     cout << "Puntaje de combinacion: " << puntaje << endl;
     cout << "------------------------------" << endl;
@@ -141,112 +143,226 @@ void mostrarPrimerJugador(string nombre) {
     cout << "--------------------------------------------" << endl;
 }
 
-///COMBINACIONES
-// Contar cuántas veces aparece un número
-int contar(int dados[], int valor, int tamanio) {
-    int c = 0;
-    for (int i = 0; i < tamanio; i++) {
-        if (dados[i] == valor) c++;
+void opcionesRelanzamientos(int v[], int t) {
+    string opcion;
+    cout << "Desea relanzar un dado o todos? (O = uno, A = todos)" << endl;
+    cin >> opcion;
+    if((opcion == "O") || (opcion == "o")) {
+        relanzarUnDado(v);
     }
-    return c;
+
+    if((opcion == "A") || (opcion == "a")) {
+        generarTirada(v, t);
+    }
 }
 
+int relanzarUnDado(int v[]) {
+    int posicion;
+    cout << "Cual dado desea relanzar(indicar posicion del 1 al 5)?:" << endl;
+    cin >> posicion;
+    v[posicion-1] = obtenerRandom(6);
+    cout << "Salio: " << v[posicion-1] << endl;
+}
+
+///COMBINACIONES
+
 // Detectar la combinación de dados
-string detectarCombinacion(int dados[], int &puntos, int tamanio) {
-    int cantidades[7] = {0}; // índices del 1 al 6
+string detectarCombinacion(int v[], int &puntos, int t) {
+    bool hayTrio = esTrio(v, t, puntos);
+    bool hayPoker = esPoker(v, t, puntos);
+    bool hayEscaleraPequena = esEscaleraPequena(v, t);
+    bool hayYahtico = esYahtico(v, t);
 
-    // Contar ocurrencias de cada valor
-    for (int i = 0; i < tamanio; i++) {
-        cantidades[dados[i]]++;
-    }
-
-    // Banderas para cada combinación
-    bool hayTrio = false;
-    bool hayPoker = false;
-    bool hayFull = false;
-    bool hayPar = false;
-    bool hayEscPeq = false;
-    bool hayEscGra = false;
-    bool hayYahtico = false;
-
-    int cantidad3 = 0, cantidad2 = 0;
-    int maxVal = dados[0];
-    for (int i = 1; i < tamanio; i++) {
-        if (dados[i] > maxVal) maxVal = dados[i];
-    }
-
-    for (int i = 1; i <= 6; i++) {
-        if (cantidades[i] == 5) hayYahtico = true;
-        if (cantidades[i] == 4) hayPoker = true;
-        if (cantidades[i] == 3) {
-            hayTrio = true;
-            cantidad3++;
-        }
-        if (cantidades[i] == 2) {
-            hayPar = true;
-            cantidad2++;
+    if(hayTrio) {
+        bool hayFull = esFull(v, t);
+        if(hayFull) {
+            puntos = 25;
+            return "Full";
+        }else {
+            return "Trio";
         }
     }
 
-    if (cantidad3 == 1 && cantidad2 == 1) hayFull = true;
-
-    // Escaleras
-    bool hay1 = cantidades[1] > 0;
-    bool hay2 = cantidades[2] > 0;
-    bool hay3 = cantidades[3] > 0;
-    bool hay4 = cantidades[4] > 0;
-    bool hay5 = cantidades[5] > 0;
-    bool hay6 = cantidades[6] > 0;
-
-    if ((hay1 && hay2 && hay3 && hay4) ||
-        (hay2 && hay3 && hay4 && hay5) ||
-        (hay3 && hay4 && hay5 && hay6)) {
-        hayEscPeq = true;
+    if(hayPoker) {
+        return "Poker";
     }
 
-    if ((hay1 && hay2 && hay3 && hay4 && hay5) ||
-        (hay2 && hay3 && hay4 && hay5 && hay6)) {
-        hayEscGra = true;
+    if(hayEscaleraPequena) {
+        bool hayEscaleraGrande = esEscaleraGrande(v, t);
+        if(hayEscaleraGrande) {
+            puntos = 35;
+            return "Escalera Grande";
+        }else{
+            puntos = 30;
+            return "Escalera Pequeña";
+        }
     }
-
-    // Evaluación según prioridad
-    if (hayYahtico) {
+    if(hayYahtico) {
         puntos = 50;
         return "Yahtico";
     }
-    if (hayPoker) {
-        for (int i = 1; i <= 6; i++) {
-            if (cantidades[i] == 4) {
-                puntos = i * 4;
-                return "Póker";
-            }
-        }
-    }
-    if (hayFull) {
-        puntos = 25;
-        return "Full";
-    }
-    if (hayEscGra) {
-        puntos = 35;
-        return "Escalera Grande";
-    }
-    if (hayEscPeq) {
-        puntos = 30;
-        return "Escalera Pequeña";
-    }
-    if (hayTrio) {
-        for (int i = 1; i <= 6; i++) {
-            if (cantidades[i] == 3) {
-                puntos = i * 3;
-                return "Trío";
-            }
-        }
-    }
 
-    puntos = maxVal;
+    int mayor = 1;
+    for(int i = 0; i < t; i++) {
+        if(v[i] > mayor) {
+            mayor = v[i];
+        }
+    }
+    puntos = mayor;
     return "Change";
 }
 
+bool esTrio(int v[], int tamanio, int &puntaje) {
+    bool trio = false;
+    int contIgual = 0;
+
+    for (int i = 1; i <= 6; i++) {
+        for (int j = 0; j < tamanio; j++) {
+            if(v[j] == i) {
+                contIgual++;
+            }
+        }
+        if(contIgual == 3) {
+            puntaje = i*3;
+            trio = true;
+        }
+        contIgual = 0;
+    }
+
+    return trio;
+}
+
+bool esPoker(int v[], int t, int &puntaje) {
+    bool poker = false;
+    int contIgual = 0;
+
+    for (int i = 1; i <= 6; i++) {
+        for (int j = 0; j < t; j++) {
+            if(v[j] == i) {
+                contIgual++;
+            }
+        }
+
+        if(contIgual == 4) {
+            for(int p = 0; p < t; p++) {
+                puntaje += v[p];
+            }
+            poker = true;
+            return poker;
+        }
+        contIgual = 0;
+    }
+
+    return poker;
+}
+
+bool esFull(int v[], int t) {
+    // 3 dados iguales + 2 dados iguales
+    bool full = false;
+    int contIgual = 0;
+
+    for (int i = 1; i <= 6; i++) {
+        for (int j = 0; j < t; j++) {
+            if(v[j] == i) {
+                contIgual++;
+            }
+        }
+        if(contIgual == 2) {
+            full = true;
+            return full;
+        }
+        contIgual = 0;
+    }
+    return full;
+}
+
+bool esEscaleraPequena(int v[], int t) {
+    bool escalera = false;
+
+    for (int i = 1; i <= 3; i++) {
+        for (int j = 0; j < t; j++) {
+            bool tiene1 = false;
+            bool tiene2 = false;
+            bool tiene3 = false;
+            bool tiene4 = false;
+
+            if(v[j] == i) {
+                tiene1 = true;
+            }
+            if(v[j+1] == i + 1) {
+                tiene2 = true;
+            }
+            if(v[j+2] == i + 2) {
+                tiene3 = true;
+            }
+            if(v[j+3] == i + 3) {
+                tiene4 = true;
+            }
+            if(tiene1 && tiene2 && tiene3 && tiene4) {
+                escalera = true;
+                return escalera;
+            }
+        }
+    }
+    return escalera;
+}
+
+bool esEscaleraGrande(int v[], int t) {
+    bool escalera = false;
+
+    for (int i = 1; i <= 2; i++) {
+        for (int j = 0; j < t; j++) {
+            bool tiene1 = false;
+            bool tiene2 = false;
+            bool tiene3 = false;
+            bool tiene4 = false;
+            bool tiene5 = false;
+
+            if(v[j] == i) {
+                tiene1 = true;
+            }
+            if(v[j+1] == i + 1) {
+                tiene2 = true;
+            }
+            if(v[j+2] == i + 2) {
+                tiene3 = true;
+            }
+            if(v[j+3] == i + 3) {
+                tiene4 = true;
+            }
+            if(v[j+4] == i + 4) {
+                tiene5 = true;
+            }
+
+            if(tiene1 && tiene2 && tiene3 && tiene4 && tiene5) {
+                escalera = true;
+                return escalera;
+            }
+        }
+    }
+    return escalera;
+}
+
+bool esYahtico (int v[], int t) {
+    bool yahtico = false;
+    int contIgual = 0;
+
+    for (int i = 1; i <= 6; i++) {
+        for (int j = 0; j < t; j++) {
+            if(v[j] == i) {
+                contIgual++;
+            }
+        }
+
+        if(contIgual == 5) {
+            yahtico = true;
+            return yahtico;
+        }
+        contIgual = 0;
+    }
+
+    return yahtico;
+}
 
 void definirTurno(string nombres[], int v[], int tamanio) {
     encabezadoDosJugadores();
@@ -301,34 +417,42 @@ void gameplayUnJugador(string nombres[], int puntajes[], int t) {
     for(int nroTurno = 1; nroTurno <= totalTurnos; nroTurno++) {
         bool turnoTerminado = false;
         int nroTirada = 1;
+        int opcion;
 
         //Vueltas de TIRADAS
         while(turnoTerminado == false) {
             system("cls");
             encabezadoUnJugador();
             mostrarTurno(nroTurno, nombreJugador,puntajeTotal,nroTirada);
-
-            generarTirada(tirada,TAM);
-            mostrarTirada(tirada,TAM);
-
             if(nroTirada < totalTiradas) {
-
-                int opcion = preguntarFinalizarTurno();
+                if(nroTirada == 1) {
+                    generarTirada(tirada,TAM);
+                }
+                mostrarTirada(tirada,TAM);
+                opcion = preguntarFinalizarTurno();
+                if(opcion == 1) {
+                    //Relanzar Dados
+                    opcionesRelanzamientos(tirada, TAM);
+                    system("pause");
+                }
 
                 if(opcion == 2) {
+                    //Terminar Turno
+                    system("cls");
                     combinacion = detectarCombinacion(tirada,puntaje, TAM);
                     puntajeTotal += puntaje;
-                    mostrarResultado(puntaje, combinacion, puntajeTotal);
+                    mostrarResultado(puntaje, combinacion, puntajeTotal, tirada, TAM);
                     turnoTerminado = true;
                     system("pause");
                 }
 
                 nroTirada++;
 
-            }else {
+            }else{
+                system("cls");
                 combinacion = detectarCombinacion(tirada,puntaje, TAM);
                 puntajeTotal += puntaje;
-                mostrarResultado(puntaje, combinacion, puntajeTotal);
+                mostrarResultado(puntaje, combinacion, puntajeTotal, tirada, TAM);
                 turnoTerminado = true;
                 system("pause");
             }
@@ -378,24 +502,31 @@ void gameplayDosJugadores(string nombres[], int puntajes[], int t) {
             system("cls");
             encabezadoDosJugadores();
             mostrarTurno(nroTurno, jugadores[0],puntajesTotales[0],nroTirada);
-
-            generarTirada(tirada,TAM);
-            mostrarTirada(tirada,TAM);
-
             if(nroTirada < totalTiradas) {
+                if(nroTirada == 1) {
+                    generarTirada(tirada,TAM);
+                }
+                mostrarTirada(tirada,TAM);
                 int opcion = preguntarFinalizarTurno();
+                if(opcion == 1) {
+                    //Relanzar Dados
+                    opcionesRelanzamientos(tirada, TAM);
+                    system("pause");
+                }
                 if(opcion == 2) {
+                    system("cls");
                     combinacion = detectarCombinacion(tirada,puntajesJugadores[0], TAM);
                     puntajesTotales[0] += puntajesJugadores[0];
-                    mostrarResultado(puntajesJugadores[0], combinacion, puntajesTotales[0]);
+                    mostrarResultado(puntajesJugadores[0], combinacion, puntajesTotales[0], tirada, TAM);
                     turnoTerminadoJugador1 = true;
                     system("pause");
                 }
                 nroTirada++;
             }else {
+                system("cls");
                 combinacion = detectarCombinacion(tirada,puntajesJugadores[0], TAM);
                 puntajesTotales[0] += puntajesJugadores[0];
-                mostrarResultado(puntajesJugadores[0], combinacion, puntajesTotales[0]);
+                mostrarResultado(puntajesJugadores[0], combinacion, puntajesTotales[0], tirada, TAM);
                 turnoTerminadoJugador1 = true;
                 system("pause");
             }
@@ -408,23 +539,31 @@ void gameplayDosJugadores(string nombres[], int puntajes[], int t) {
             encabezadoDosJugadores();
             mostrarTurno(nroTurno, jugadores[1],puntajesTotales[1],nroTirada);
 
-            generarTirada(tirada,TAM);
-            mostrarTirada(tirada,TAM);
-
             if(nroTirada < totalTiradas) {
+                if(nroTirada == 1) {
+                    generarTirada(tirada,TAM);
+                }
+                mostrarTirada(tirada,TAM);
                 int opcion = preguntarFinalizarTurno();
+                if(opcion == 1) {
+                    //Relanzar Dados
+                    opcionesRelanzamientos(tirada, TAM);
+                    system("pause");
+                }
                 if(opcion == 2) {
+                    system("cls");
                     combinacion = detectarCombinacion(tirada,puntajesJugadores[1], TAM);
                     puntajesTotales[1] += puntajesJugadores[1];
-                    mostrarResultado(puntajesJugadores[1], combinacion, puntajesTotales[1]);
+                    mostrarResultado(puntajesJugadores[1], combinacion, puntajesTotales[1], tirada, TAM);
                     turnoTerminadoJugador2 = true;
                     system("pause");
                 }
                 nroTirada++;
             }else {
+                system("cls");
                 combinacion = detectarCombinacion(tirada,puntajesJugadores[1], TAM);
                 puntajesTotales[1] += puntajesJugadores[1];
-                mostrarResultado(puntajesJugadores[1], combinacion, puntajesTotales[1]);
+                mostrarResultado(puntajesJugadores[1], combinacion, puntajesTotales[1], tirada, TAM);
                 turnoTerminadoJugador2 = true;
                 system("pause");
             }
